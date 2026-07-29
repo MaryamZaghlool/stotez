@@ -1,0 +1,81 @@
+<div class="container mt-4">
+
+    <h2>Products</h2>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input class="form-control" type="text" placeholder="Search..."
+                (input)="search($any($event.target).value)" />
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" (change)="changeCategory($any($event.target).value)">
+                <option value="">All Categories</option>
+                <option>beauty</option>
+                <option>fragrances</option>
+                <option>furniture</option>
+                <option>groceries</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" (change)="changeStatus($any($event.target).value)">
+                <option value="">All Status</option>
+                <option>In Stock</option>
+                <option>Low Stock</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" (click)="sortProducts()">
+                Sort
+            </button>
+        </div>
+
+    </div>
+
+    @if(loading()){
+    <div class="text-center mt-5">
+        Loading...
+    </div>
+    }
+
+    @if(!loading()){
+    <table class="table table-bordered">
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Category</th>
+
+                <th>Price</th>
+
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @for (product of filteredProducts(); track $index) {
+            <tr>
+
+                <td>{{product.title}}</td>
+
+                <td>{{product.category}}</td>
+
+                <td>{{product.price}}</td>
+
+                <td>{{product.availabilityStatus}}</td>
+
+            </tr>
+            }
+        </tbody>
+
+    </table>
+    }
+</div>
