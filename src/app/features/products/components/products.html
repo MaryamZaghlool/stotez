@@ -35,14 +35,14 @@
 
     </div>
 
-    @if(loading()){
-    <div class="text-center mt-5">
-        Loading...
-    </div>
-    }
+    <div *ngIf="loading" class="text-center mt-5">
 
-    @if(!loading()){
-    <table class="table table-bordered">
+        Loading...
+
+    </div>
+
+    <table class="table table-bordered" *ngIf="!loading">
+
         <thead>
 
             <tr>
@@ -61,8 +61,7 @@
 
         <tbody>
 
-            @for (product of filteredProducts(); track $index) {
-            <tr>
+            <tr *ngFor="let product of filteredProducts">
 
                 <td>{{product.title}}</td>
 
@@ -73,9 +72,9 @@
                 <td>{{product.availabilityStatus}}</td>
 
             </tr>
-            }
+
         </tbody>
 
     </table>
-    }
+
 </div>

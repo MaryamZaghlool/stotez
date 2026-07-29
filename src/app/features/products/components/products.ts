@@ -1,21 +1,20 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProductService } from '../Services/products';
-import { Product } from '../model/prodect.model';
-import { finalize } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-products',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
 export class ProductsComponent {
 
-  products = signal<Product[]>([]);
+  products: any[] = [];
 
-  filteredProducts = signal<Product[]>([])
+  filteredProducts: any[] = [];
 
-  loading = signal(false);
+  loading = false;
 
   searchText = '';
 
@@ -27,63 +26,261 @@ export class ProductsComponent {
 
   ngOnInit() {
 
-    this.loading.set(true);
+    // this.loading = true;
 
-    this.service.getProducts()
-      .pipe(
-        finalize(() => this.loading.set(false))
-      )
-      .subscribe((res: any) => {
+    this.service.getProducts().subscribe((res: any) => {
 
-        this.products.set(res.products);
+      this.loading = false;
 
-        this.filteredProducts.set(res.products);
-        console.log(res.products)
-        console.log(this.filteredProducts());
+      this.products = res.products;
 
-      });
+      this.filteredProducts = [...res.products];
+      console.log(res.products)
+      console.log(this.filteredProducts);
+
+    });
 
   }
 
   search(value: string) {
+
     this.searchText = value;
-    this.applyFilters()
+
+    if (this.searchText != '') {
+
+      this.filteredProducts = this.products.filter((x: any) => {
+
+        if (x.title.toLowerCase().includes(this.searchText.toLowerCase())) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    else {
+
+      this.filteredProducts = this.products;
+
+    }
+
+    if (this.category != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.category == this.category) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    if (this.status != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.availabilityStatus == this.status) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
   }
 
   changeCategory(category: string) {
+
     this.category = category;
-    this.applyFilters()
+
+    if (this.searchText != '') {
+
+      this.filteredProducts = this.products.filter((x: any) => {
+
+        if (x.title.toLowerCase().includes(this.searchText.toLowerCase())) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    else {
+
+      this.filteredProducts = this.products;
+
+    }
+
+    if (this.category != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.category == this.category) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    if (this.status != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.availabilityStatus == this.status) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
   }
 
   changeStatus(status: string) {
+
     this.status = status;
-    this.applyFilters()
-  }
 
-  private applyFilters(): void {
-    this.filteredProducts.set(
-      this.products().filter((product: Product) => {
-        const matchedSearch = this.searchText === '' ||
-          product.title.toLowerCase().includes(this.searchText.toLowerCase())
+    if (this.searchText != '') {
 
-        const matchedCategory =
-          this.category === '' ||
-          product.category === this.category
+      this.filteredProducts = this.products.filter((x: any) => {
 
-        const matchedStatus =
-          this.status === '' ||
-          product.availabilityStatus === this.status
+        if (x.title.toLowerCase().includes(this.searchText.toLowerCase())) {
 
-        return matchedSearch && matchedCategory && matchedStatus
-      })
-    )
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    else {
+
+      this.filteredProducts = this.products;
+
+    }
+
+    if (this.category != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.category == this.category) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
+    if (this.status != '') {
+
+      this.filteredProducts = this.filteredProducts.filter((x: any) => {
+
+        if (x.availabilityStatus == this.status) {
+
+          return true;
+
+        }
+
+        else {
+
+          return false;
+
+        }
+
+      });
+
+    }
+
   }
 
   sortProducts() {
 
-    this.filteredProducts.set(
-      this.filteredProducts().sort((a, b) => a.price - b.price)
-    )
+    this.filteredProducts.sort((a: any, b: any) => {
+
+      if (a.price > b.price) {
+
+        return 1;
+
+      }
+
+      else if (a.price < b.price) {
+
+        return -1;
+
+      }
+
+      else {
+
+        return 0;
+
+      }
+
+    });
 
   }
 
